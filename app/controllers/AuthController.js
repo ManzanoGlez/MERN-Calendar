@@ -23,7 +23,7 @@ const register = async (req, res = response) => {
 
         const docUser = await user.save();
 
-        const access_token = await generateJWT(user.id, user.name);
+        const access_token = await generateJWT(user);
 
         return res.status(201).json({
             ok: true,
@@ -49,7 +49,7 @@ const login = async (req, res = response) => {
 
         if (user) {
             if (await bcrypt.compareSync(password, user.password)) {
-                const access_token = await generateJWT(user.id, user.name);
+                const access_token = await generateJWT(user);
 
                 return res.status(200).json({
                     ok: true,
@@ -78,12 +78,12 @@ const login = async (req, res = response) => {
 };
 
 const renew = async (req, res = response) => {
+    const { uid, name, email } = req.auth_user;
 
-    const { uid, name } = req.auth_user;
-    
-    const access_token = await generateJWT(uid, name);
+    const user = { uid, name, email };
 
-    return res.json({ ok: true,uid,name, access_token });
+    const access_token = await generateJWT(user);
+    return res.json({ ok: true, user, access_token });
 };
 
 module.exports = {
