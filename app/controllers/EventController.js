@@ -50,10 +50,17 @@ const update = async (req, res = response) => {
 
         const eventExist = await Event.findById(id);
 
-        if (!eventExist || uid !== eventExist.user.toString()) {
+        if (!eventExist) {
             return res.status(404).json({
                 ok: false,
                 msg: "Evento no existente",
+            });
+        }
+
+        if (uid !== eventExist.user.toString()) {
+            return res.status(400).json({
+                ok: false,
+                msg: "No puede modificar eventos que no le pertenecen.",
             });
         }
 
@@ -85,12 +92,19 @@ const destroy = async (req, res = response) => {
 
         const eventExist = await Event.findById(id);
 
-        if (!eventExist || uid !== eventExist.user.toString()) {
+        if (!eventExist) {
             return res.status(404).json({
                 ok: false,
                 msg: "Evento no existente",
             });
         }
+
+           if (uid !== eventExist.user.toString()) {
+               return res.status(404).json({
+                   ok: false,
+                   msg: "Sólo puede eliminar eventos que haya creado usted.",
+               });
+           }
 
         const event = await Event.findByIdAndRemove(id);
 
