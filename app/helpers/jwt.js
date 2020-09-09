@@ -8,9 +8,6 @@ const generateJWT = (user) => {
            name: user.name,
            email: user.email,
        };
- 
-
-//console.log(payload);
 
         jwt.sign(payload,process.env.SEED,{
             expiresIn: '2h'

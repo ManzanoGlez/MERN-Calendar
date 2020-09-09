@@ -78,9 +78,10 @@ const login = async (req, res = response) => {
 };
 
 const renew = async (req, res = response) => {
+    
     const { uid, name, email } = req.auth_user;
 
-    const user = { uid, name, email };
+    const user = { id:uid, name, email };
 
     const access_token = await generateJWT(user);
     return res.json({ ok: true, user, access_token });
